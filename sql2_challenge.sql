@@ -1,24 +1,4 @@
--- Esports Tournament
-
--- INTRO
-/*
-The top eSports competitors from across the globe have gathered to battle it out.
-Can you analyse the following data to find out all about the tournament?
-*/
-
--- Query the Teams table;
-SELECT *
-FROM Teams;
-
--- Query the Players table;
-SELECT *
-FROM Players
-LIMIT 5;
-
--- Query the Matches table;
-SELECT *
-FROM Matches
-LIMIT 5;
+-- Challenge 2 - Esports Tournament
 
 -- QUESTIONS
 
@@ -26,6 +6,17 @@ LIMIT 5;
 SELECT player_name
 FROM Players
 WHERE salary > 100000;
+
+-- Sol1:
+| player_name |
+|-------------|
+| Faker       |
+| Perkz       |
+| Castle09    |
+| Daron       |
+| ForceZ      |
+| Joker       |
+| Wringer     |
 
 -- 2. What is the team name of the player with player_id = 3?
 SELECT team_name
@@ -36,12 +27,26 @@ WHERE team_id IN (
     WHERE player_id = 3
     );
 
+-- Sol2:
+| team_name     | 
+|---------------|
+| SK Telecom T1 |
+
 -- 3. What is the total number of players in each team?
 SELECT Teams.team_name,
     COUNT(player_id) AS num_of_players
 FROM Players
 INNER JOIN Teams ON Players.team_id = Teams.team_id
 GROUP BY Teams.team_name;
+
+-- Sol3:
+| team_name     | num_of_players |
+|---------------|----------------|
+| Cloud9        | 3              |
+| G2 Esports    | 3              |
+| SK Telecom T1 | 3              |
+| Team Liquid   | 3              |
+| Fnatic        | 3              |
 
 -- 4. What is the team name and captain name of the team with team_id = 2?
 WITH team_id_2 AS (
@@ -57,12 +62,24 @@ FROM Players
 INNER JOIN team_id_2
 ON Players.player_id = team_id_2.captain_id;
 
+-- Sol4:
+| team_name | captain_name |
+|-----------|--------------|
+| Fnatic    | JW           |
+
 -- 5. What are the player names and their roles in the team with team_id = 1?
 SELECT team_id,
     player_name,
     role
 FROM Players
 WHERE team_id = 1;
+
+-- Sol5:
+| team_id | player_name | role      |
+|---------|-------------|-----------|
+| 1       | Shroud      | Rifler    |
+| 1       | Castle09    | AWP       |
+| 1       | KL34        | Mid Laner |
 
 -- 6. What are the team names and the number of matches they have won?
 WITH winner_teams AS (
@@ -78,6 +95,15 @@ FROM Teams
 INNER JOIN winner_teams ON Teams.team_id = winner_teams.winner_id
 ORDER BY matches_won DESC;
 
+-- Sol6:
+| team_name       | matches_won |
+|-----------------|-------------|
+| SK Telecom T1   | 4           |
+| Cloud9          | 3           |
+| Fnatic          | 1           |
+| Team Liquid     | 1           |
+| G2 Esports      | 1           |
+
 -- 7. What is the average salary of players in the teams with country 'USA'?
 SELECT ROUND(AVG(salary), 2) AS average_salary_usa_teams
 FROM Players
@@ -86,6 +112,11 @@ WHERE team_id IN (
     FROM Teams
     WHERE country = 'USA'
 );
+
+-- Sol7:
+| average_salary_usa_teams |
+|--------------------------|
+| 97166.67                 |
 
 --8. Which team won the most matches?
 SELECT team_name
@@ -97,6 +128,11 @@ WHERE team_id IN (
     ORDER BY COUNT(*) DESC
     LIMIT 1
     );
+
+-- Sol8:
+| team_name       |
+|-----------------|
+| SK Telecom T1   |
 
 -- 9. What are the team names and the number of players in each team whose salary is greater than 100,000?
 WITH high_salary_players AS (
@@ -112,6 +148,14 @@ FROM Teams
 INNER JOIN high_salary_players ON Teams.team_id = high_salary_players.team_id
 GROUP BY team_name
 ORDER BY num_of_players_with_salary_above_100000 DESC;
+
+-- Sol9:
+| team_name       | num_of_players_with_salary_above_100000 |
+|-----------------|-----------------------------------------|
+| SK Telecom T1   | 3                                       |
+| G2 Esports      | 2                                       |
+| Cloud9          | 1                                       |
+| Fnatic          | 1                                       |
 
 -- 10. What is the date and the score of the match with match_id = 3?
 WITH match_id_3 AS (
@@ -153,3 +197,8 @@ FROM team_1,
     team_2, 
     winner_team,
     match_id_3;
+
+-- Sol10:
+| match_id_3_date | team1_name  | team2_name | winner_team_name | score_team1 | score_team2 |
+|-----------------|-------------|------------|------------------|-------------|-------------|
+| 2022-03-01      | Team Liquid | Cloud9     | Cloud9           | 17          | 13          |
