@@ -1,23 +1,4 @@
 -- Steve's Car Showroom
-
--- INTRO
-/* Steve runs a top-end car showroom but his data analyst has just quit and left him without his crucial insights.
-Can you analyse the following data to provide him with all the answers he requires?
-*/
-
--- Querying cars table
-SELECT *
-FROM cars;
-
--- Querying salespersons table
-SELECT *
-FROM salespersons;
-
--- Querying sales table first 5 rows
-SELECT *
-FROM sales
-LIMIT 5;
-
 -- QUESTIONS
 
 -- 1. What are the details of all cars purchased in the year 2022?
@@ -27,6 +8,17 @@ FROM cars
 INNER JOIN sales ON cars.car_id = sales.car_id
 WHERE EXTRACT(YEAR FROM purchase_date) = 2022
 ORDER BY car_id;
+
+| car_id | make       | type    | style    | cost_$ | purchase_date |
+|--------|------------|---------|----------|--------|----------------|
+| 9      | Honda      | Civic   | Sedan    | 30000  | 2022-01-01     |
+| 10     | Toyota     | Corolla | Hatchback| 25000  | 2022-02-03     |
+| 11     | Mercedes   | C-Class | Coupe    | 60000  | 2022-02-10     |
+| 12     | Audi       | A4      | Sedan    | 48000  | 2022-03-01     |
+| 13     | BMW        | X5      | SUV      | 55000  | 2022-04-02     |
+| 14     | Ford       | Explorer| SUV      | 40000  | 2022-05-05     |
+| 15     | BMW        | X5      | SUV      | 55000  | 2022-06-07     |
+| 16     | Toyota     | Corolla | Hatchback| 25000  | 2022-07-09     |
 
 -- 2. What is the total number of cars sold by each salesperson?
 SELECT name AS salesperson,
