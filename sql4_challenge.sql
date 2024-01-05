@@ -2,38 +2,36 @@
 
 -- QUESTIONS
 
--- Query the customers table
-SELECT *
-FROM customers;
-
--- Query the accounts table
-SELECT *
-FROM accounts;
-
--- Query the transactions table
-SELECT *
-FROM transactions;
-
--- Query the branches table
-SELECT *
-FROM branches;
-
--- Questions
-
 -- 1. What are the names of all the customers who live in New York?
 SELECT firstname,
     lastname
 FROM customers
 WHERE city = 'New York';
 
+-- Sol1:
+| firstname | lastname |
+|-----------|----------|
+| John      | Doe      |
+| Jane      | Doe      |
+
 -- 2. What is the total number of accounts in the Accounts table?
 SELECT COUNT(accountid) AS total_number_of_accounts
 FROM accounts;
+
+-- Sol2:
+| total_number_of_accounts |
+|--------------------------|
+| 15                       |
 
 -- 3. What is the total balance of all checking accounts?
 SELECT SUM(balance) AS total_balance_of_all_checking_accounts
 FROM accounts
 WHERE accounttype = 'Checking';
+
+-- Sol3:
+| total_balance_of_all_checking_accounts |
+|---------------------------------------|
+| 31000.00                              |
 
 -- 4. What is the total balance of all accounts associated with customers who live in Los Angeles?
 SELECT SUM(balance) AS total_balance_of_all_account_of_LA_customers
@@ -43,6 +41,11 @@ WHERE customerid IN (
     FROM customers
     WHERE city = 'Los Angeles'
 );
+
+-- Sol4:
+| total_balance_of_all_account_of_la_customers |
+|---------------------------------------------|
+| 75000.00                                    |
 
 -- 5. Which branch has the highest average account balance?
 SELECT *
@@ -55,6 +58,11 @@ WHERE branchid IN (
     LIMIT 1
 );
 
+-- Sol5:
+| branchid | branchname   | city           | state |
+|----------|--------------|----------------|-------|
+| 14       | North Beach  | San Francisco  | CA    |
+
 -- 6. Which customer has the highest current balance in their accounts?
 -- Aggregating the transactions table to find activity in each account
 WITH account_activity AS (
@@ -63,7 +71,7 @@ WITH account_activity AS (
     FROM transactions
     GROUP BY accountid
 ),
-
+    
 /* Joining the above table to accounts table to sum the balance with debit/credit
 and find the customerid of the customer with the highest current balance.*/
 highest_balance AS (
@@ -82,6 +90,11 @@ SELECT customers.*,
     total_balance
 FROM customers
 INNER JOIN highest_balance ON customers.customerid = highest_balance.customerid;
+
+-- Sol6:
+| customerid | firstname | lastname | city         | state | total_balance |
+|------------|-----------|----------|--------------|-------|---------------|
+| 5          | Michael   | Lee      | Los Angeles  | CA    | 60500.00      |
 
 -- 7. Which customer has made the most transactions in the Transactions table?
 -- Aggregating transactions table to find count of transactions
@@ -111,6 +124,12 @@ WHERE num_txns = (
     FROM customer_txns
 );
 
+-- Sol7:
+| customerid | firstname | lastname | city           | state | num_txns |
+|------------|-----------|----------|----------------|-------|----------|
+| 4          | Alice     | Johnson  | San Francisco  | CA    | 4        |
+| 2          | Jane      | Doe      | New York       | NY    | 4        |
+
 -- 8. Which branch has the highest total balance across all of its accounts?
 -- Aggregating accounts table to find total balance per branch.
 WITH branch_balances AS(
@@ -128,6 +147,11 @@ SELECT branches.*,
 FROM branches
 INNER JOIN branch_balances ON branches.branchid = branch_balances.branchid;
 
+-- Sol8:
+| branchid | branchname   | city           | state | total_balance |
+|----------|--------------|----------------|-------|---------------|
+| 14       | North Beach  | San Francisco  | CA    | 60000.00      |
+
 -- 9. Which customer has the highest total balance across all of their accounts, including savings and checking accounts?
 -- aggregating the accounts to table find customerid with aggregated balance.
 WITH customer_agg_balance AS (
@@ -144,6 +168,11 @@ SELECT customers.*,
     total_balance
 FROM customers
 INNER JOIN customer_agg_balance ON customers.customerid = customer_agg_balance.customerid;
+
+-- Sol9:
+| customerid | firstname | lastname | city         | state | total_balance |
+|------------|-----------|----------|--------------|-------|---------------|
+| 5          | Michael   | Lee      | Los Angeles  | CA    | 60000.00      |
 
 -- 10. Which branch has the highest number of transactions in the Transactions table?
 -- aggregating the transactions table to find the txns per account.
@@ -172,3 +201,10 @@ WHERE num_txns IN (
     SELECT MAX(num_txns)
     FROM txn_per_branch
 );
+
+-- Sol10:
+| branchid | branchname | city           | state | num_txns |
+|----------|------------|----------------|-------|----------|
+| 1        | Main       | New York       | NY    | 4        |
+| 8        | South Bay  | San Francisco  | CA    | 4        |
+
